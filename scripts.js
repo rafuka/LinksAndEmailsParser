@@ -1,42 +1,80 @@
 
 
-var testInputString = 'Lorem ipsum dolor <a href="mailto:sit@amet.com">site</a> consectetur <span>adipiscing elit</span>, sed do <strong>eiusmod tempor incididunt</strong> ut <a href="http://exampleurl1.com" >labore et</a> dolore <a href="mailto:magna@aliqua.com">Ut</a>. <em>enim ad minim</em> veniam, <a href="#anchor">quis nostrud</a> exercitation ullamco laboris nisi ut <a href="https://exampleurl2.com">aliquip</a> ex ea commodo consequat.</p>';
-
-var returnObject = {
-	links: [],
-	emails: []
-};
-
-var linksPattern = /"(https?:\/\/.+?)"(?:>|.+?>)(.+?)<\/a>/g;
-var emailsPattern = /"mailto:(.+?)"/g;
-var linksArray = [];
-var emailsArray = [];
-
-var match;
-var counter = 0;
-
-while (match = linksPattern.exec(testInputString)) {
-
-	linksArray[counter] = {
-		linkText : match[2],
-		url : match[1]
-	};
-
-	counter++;
-} 
+var uploadBtn 	= document.getElementById('upload-btn');
+var parseBtn 	= document.getElementById('parse-btn');
+var inputArea 	= document.getElementById('input-area');
+var outputLinks  = document.getElementById('output-links');
+var outputEmails  = document.getElementById('output-emails');
 
 
-while (match = emailsPattern.exec(testInputString)) {
+uploadBtn.addEventListener('input', handleUpload, false);
+parseBtn.addEventListener('click', handleParse, false);
 
-	emailsArray.push(match[1]);
+
+function handleUpload(event) {
+
+	var file = this.files[0];
+	var fr = new FileReader();
+
+	fr.addEventListener('loadend', function(e) {
+		inputArea.value = fr.result;
+	});
+
+	fr.readAsText(file);	
 }
 
-returnObject.links = linksArray;
-returnObject.emails = emailsArray;
+function handleParse(event) {
+	event.preventDefault();
 
+	var parseResult = parseLinksAndEmails(inputArea.value);
 
+	if (!parseResult) return false;
 
+	outputLinks.innerHTML = '';
+	outputEmails.innerHTML = '';
 
+	if (parseResult.links.length > 0) {
+		var links = parseResult.links;
+		for (var i = 0; i < links.length; i++) {
+			var pText = document.createElement('p');
+			var pUrl = document.createElement('p');
+			pUrl.classList.add('link-p');
+			var div = document.createElement('div');
+			div.classList.add('link-div');
+			var divTextNode = document.createTextNode('Link ' + (i+1) + ':');
+			var pTextTextNode = document.createTextNode('Text: ' + links[i].linkText);
+			var pUrlTextNode = document.createTextNode('Url: ' + links[i].url);
+			
+			pText.appendChild(pTextTextNode);
+			pUrl.appendChild(pUrlTextNode);
 
+			div.appendChild(divTextNode);
+			div.appendChild(pText);
+			div.appendChild(pUrl);
+			outputLinks.appendChild(div);
+		}
+	}
+	else {
 
+		var textNode = document.createTextNode('no links found');
+		outputLinks.appendChild(textNode);
+	}
 
+	if (parseResult.emails.length > 0) {
+		var emails = parseResult.emails;
+		for (var i = 0; i < emails.length; i++) {
+			var div = document.createElement('div');
+			var divTextNode = document.createTextNode('Email ' + (i+1) + ': ' + emails[i]);
+
+			div.appendChild(divTextNode);
+
+			outputEmails.appendChild(div);
+
+		}
+	}
+	else {
+
+		var textNode = document.createTextNode('no emails found');
+		outputEmails.appendChild(textNode);
+	}
+}

@@ -7,8 +7,23 @@
 </head>
 <body>
 
-	
+	<p>Paste or upload the text to be parsed</p>
+	<form id="input-form">
+		<textarea id="input-area"></textarea>
+		<input id="upload-btn" type="file" accept=".txt, .html"> 
+		<button id="parse-btn">Parse for Emails and Links!</button>
+	</form>
 
+	<p>Links</p>
+	<div id="output-links">
+		
+	</div>
+	<p>Emails</p>
+	<div id="output-emails">
+		
+	</div>
+
+	<script type="text/javascript" src="parser.js"></script>
 	<script type="text/javascript" src="scripts.js"></script>
 </body>
 </html>
