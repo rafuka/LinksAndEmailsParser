@@ -1,10 +1,16 @@
 
 
-var uploadBtn 	= document.getElementById('upload-btn');
-var parseBtn 	= document.getElementById('parse-btn');
-var inputArea 	= document.getElementById('input-area');
-var outputLinks  = document.getElementById('output-links');
-var outputEmails  = document.getElementById('output-emails');
+var uploadBtn 		= document.getElementById('upload-btn');
+var parseBtn 		= document.getElementById('parse-btn');
+var inputArea 		= document.getElementById('input-area');
+var outputLinks  	= document.getElementById('output-links');
+var outputEmails  	= document.getElementById('output-emails');
+
+
+if (testInputString) { 
+	inputArea.value = testInputString;
+	inputArea.select();
+}
 
 
 uploadBtn.addEventListener('input', handleUpload, false);
@@ -36,20 +42,28 @@ function handleParse(event) {
 	if (parseResult.links.length > 0) {
 		var links = parseResult.links;
 		for (var i = 0; i < links.length; i++) {
-			var pText = document.createElement('p');
+			var pLink = document.createElement('p');
+
 			var pUrl = document.createElement('p');
 			pUrl.classList.add('link-p');
+
 			var div = document.createElement('div');
 			div.classList.add('link-div');
-			var divTextNode = document.createTextNode('Link ' + (i+1) + ':');
-			var pTextTextNode = document.createTextNode('Text: ' + links[i].linkText);
-			var pUrlTextNode = document.createTextNode('Url: ' + links[i].url);
+			var divText = 'Link ' + (i+1) + ':';
+			var divTextNode = document.createTextNode(divText);
+
+
+			var pLinkText = 'Text: ' + links[i].linkText;
+			var pLinkTextNode = document.createTextNode(pLinkText);
+
+			var pUrlText = 'Url: ' + links[i].url;
+			var pUrlTextNode = document.createTextNode(pUrlText);
 			
-			pText.appendChild(pTextTextNode);
+			pLink.appendChild(pLinkTextNode);
 			pUrl.appendChild(pUrlTextNode);
 
 			div.appendChild(divTextNode);
-			div.appendChild(pText);
+			div.appendChild(pLink);
 			div.appendChild(pUrl);
 			outputLinks.appendChild(div);
 		}
@@ -63,13 +77,14 @@ function handleParse(event) {
 	if (parseResult.emails.length > 0) {
 		var emails = parseResult.emails;
 		for (var i = 0; i < emails.length; i++) {
+
 			var div = document.createElement('div');
-			var divTextNode = document.createTextNode('Email ' + (i+1) + ': ' + emails[i]);
+			var divText = 'Email ' + (i+1) + ': ' + emails[i];
+			var divTextNode = document.createTextNode(divText);
 
 			div.appendChild(divTextNode);
 
 			outputEmails.appendChild(div);
-
 		}
 	}
 	else {
